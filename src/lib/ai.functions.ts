@@ -75,3 +75,50 @@ export const translateStrings = createServerFn({ method: "POST" })
       return { strings: data.strings };
     }
   });
+
+/** Analyze an uploaded document. Supports pasted/extracted text and PDF/image data URLs. */
+export const analyzeDoc = createServerFn({ method: "POST" })
+  .inputValidator((input: {
+    task: string;
+    filename: string;
+    mime?: string;
+    dataUrl?: string;
+    text?: string;
+    language?: string;
+  }) => input)
+  .handler(async ({ data }) => {
+    const key = process.env.LOVABLE_API_KEY;
+    if (!key) throw new Error("Missing LOVABLE_API_KEY");
+    const langLine = data.language && data.language !== "English" ? ` Respond in ${data.language}.` : "";
+
+    const system = `You are a document analysis expert.${langLine} ${data.task}`;
+    const userContent: any[] = [{ type: "text", text: `Document: ${data.filename}\n\n${data.text ? data.text : "(see attached file)"}` }];
+
+    if (data.dataUrl && data.mime) {
+      if (data.mime.startsWith("image/")) {
+        userContent.push({ type: "image_url", image_url: { url: data.dataUrl } });
+      } else {
+        userContent.push({ type: "file", file: { filename: data.filename, file_data: data.dataUrl } });
+      }
+    }
+
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: userContent },
+        ],
+      }),
+    });
+    if (res.status === 429) throw new Error("Rate limited. Please try again in a moment.");
+    if (res.status === 402) throw new Error("AI credits exhausted. Please add credits to continue.");
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      throw new Error(`Could not analyze this file (${res.status}). Try pasting its text. ${t.slice(0, 120)}`);
+    }
+    const j = await res.json();
+    return { text: (j?.choices?.[0]?.message?.content ?? "").trim() };
+  });
