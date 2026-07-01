@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WelcomeGate } from "../components/WelcomeGate";
 import {
   Outlet,
   Link,
