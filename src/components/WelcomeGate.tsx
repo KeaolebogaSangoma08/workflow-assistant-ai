@@ -36,7 +36,7 @@ export function WelcomeGate({ children }: { children: React.ReactNode }) {
       <div className="pointer-events-none absolute -left-32 -top-32 size-96 rounded-full bg-white/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-32 -right-32 size-96 rounded-full bg-white/10 blur-3xl" />
 
-      <div className="relative mx-4 flex max-w-lg flex-col items-center text-center text-prim-foreground">
+      <div className="relative mx-4 flex max-w-lg flex-col items-center text-center">
         <div className="mb-6 flex size-20 items-center justify-center rounded-3xl bg-white/15 backdrop-blur-md shadow-glow animate-float-in">
           <Sparkles className="size-10 text-primary-foreground" />
         </div>
