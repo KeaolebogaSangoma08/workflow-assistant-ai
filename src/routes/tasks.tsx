@@ -34,11 +34,13 @@ function TasksPage() {
     if (text) {
       const lines = text.split("\n").filter((l: string) => /^[-*]\s/.test(l.trim())).map((l: string) => l.replace(/^[-*]\s/, "").trim()).slice(0, 8);
       if (lines.length) {
-        addMany(lines.map((task: string) => ({
-          id: crypto.randomUUID(), task, owner: f.team.split(",")[0]?.trim() || "Unassigned",
+        const members = f.team.split(",").map((m) => m.trim()).filter(Boolean);
+        addMany(lines.map((task: string, i: number) => ({
+          id: crypto.randomUUID(), task,
+          owner: members.length ? members[i % members.length] : "Unassigned",
           due: f.deadline || "", priority: f.priority as TaskItem["priority"], status: "Open" as const,
         })));
-        toast.success(`${lines.length} tasks added to your board`);
+        toast.success(members.length ? `${lines.length} tasks assigned across ${members.length} team member${members.length > 1 ? "s" : ""}` : `${lines.length} tasks added to your board`);
       }
     }
   };
