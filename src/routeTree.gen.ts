@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as MeetingsRouteImport } from './routes/meetings'
@@ -29,6 +30,11 @@ const WorkflowRoute = WorkflowRouteImport.update({
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResearchRoute = ResearchRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/meetings': typeof MeetingsRoute
   '/prompts': typeof PromptsRoute
   '/research': typeof ResearchRoute
+  '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
   '/workflow': typeof WorkflowRoute
 }
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/meetings': typeof MeetingsRoute
   '/prompts': typeof PromptsRoute
   '/research': typeof ResearchRoute
+  '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
   '/workflow': typeof WorkflowRoute
 }
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/meetings': typeof MeetingsRoute
   '/prompts': typeof PromptsRoute
   '/research': typeof ResearchRoute
+  '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
   '/workflow': typeof WorkflowRoute
 }
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/meetings'
     | '/prompts'
     | '/research'
+    | '/settings'
     | '/tasks'
     | '/workflow'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/meetings'
     | '/prompts'
     | '/research'
+    | '/settings'
     | '/tasks'
     | '/workflow'
   id:
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/meetings'
     | '/prompts'
     | '/research'
+    | '/settings'
     | '/tasks'
     | '/workflow'
   fileRoutesById: FileRoutesById
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   MeetingsRoute: typeof MeetingsRoute
   PromptsRoute: typeof PromptsRoute
   ResearchRoute: typeof ResearchRoute
+  SettingsRoute: typeof SettingsRoute
   TasksRoute: typeof TasksRoute
   WorkflowRoute: typeof WorkflowRoute
 }
@@ -187,6 +200,13 @@ declare module '@tanstack/react-router' {
       path: '/tasks'
       fullPath: '/tasks'
       preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/research': {
@@ -265,6 +285,7 @@ const rootRouteChildren: RootRouteChildren = {
   MeetingsRoute: MeetingsRoute,
   PromptsRoute: PromptsRoute,
   ResearchRoute: ResearchRoute,
+  SettingsRoute: SettingsRoute,
   TasksRoute: TasksRoute,
   WorkflowRoute: WorkflowRoute,
 }
