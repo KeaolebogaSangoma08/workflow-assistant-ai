@@ -32,9 +32,9 @@ function TasksPage() {
       `Goal: ${f.goal}\nDeadline: ${f.deadline || "flexible"}\nPriority: ${f.priority}\nTeam members: ${f.team || "unspecified"}`,
     );
     if (text) {
-      const lines = text.split("\n").filter((l) => /^[-*]\s/.test(l.trim())).map((l) => l.replace(/^[-*]\s/, "").trim()).slice(0, 8);
+      const lines = text.split("\n").filter((l: string) => /^[-*]\s/.test(l.trim())).map((l: string) => l.replace(/^[-*]\s/, "").trim()).slice(0, 8);
       if (lines.length) {
-        addMany(lines.map((task) => ({
+        addMany(lines.map((task: string) => ({
           id: crypto.randomUUID(), task, owner: f.team.split(",")[0]?.trim() || "Unassigned",
           due: f.deadline || "", priority: f.priority as TaskItem["priority"], status: "Open" as const,
         })));
